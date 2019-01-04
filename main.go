@@ -7,6 +7,7 @@ import (
 	"encoding/csv"
 	"io"
 	"log"
+	"math"
 	"net/http"
 	"os"
 	"os/signal"
@@ -268,7 +269,7 @@ func handleRequest(c *gin.Context) {
 		m := make(map[string]interface{})
 		for i, column := range columns {
 			value := strings.Replace(values[i], ",", "", -1)
-			if number, err := strconv.ParseFloat(value, 64); err == nil {
+			if number, err := strconv.ParseFloat(value, 64); err == nil && !math.IsInf(number, 0) {
 				m[column] = number
 			} else {
 				m[column] = values[i]
