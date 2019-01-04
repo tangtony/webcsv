@@ -30,7 +30,20 @@ var (
 	csvFieldCount int
 	csvHasHeader  bool
 	csvHeader     []string
+	csvIndicies   []string
 )
+
+// trySplit attempts to split the given string by calling
+// strings.Split for each separator in the order given.
+// It returns the first successful split that occurs.
+func trySplit(str string, seps ...string) []string {
+	for _, sep := range seps {
+		if s := strings.Split(str, sep); len(s) != 1 {
+			return s
+		}
+	}
+	return []string{str}
+}
 
 func parseEnvironment() {
 
@@ -44,6 +57,7 @@ func parseEnvironment() {
 	flagSet.IntVar(&csvFieldCount, "field-count", 0, "the number of fields/columns in the csv file")
 	flagSet.BoolVar(&csvHasHeader, "has-header", true, "whether or not the csv file has a header")
 	header := flagSet.String("header", "", "a custom header to use")
+	indicies := flagSet.String("indicies", "", "headers to create indicies for")
 
 	// Parse the CLI flags/environment variables
 	flagSet.Parse(os.Args[1:])
@@ -74,16 +88,18 @@ func parseEnvironment() {
 		log.Println("assuming the CSV file has no header")
 	}
 
-	// Check if a custom header was provided and attempt to parse the header
-	// using the same delimiter as the file. If the header cannot be parsed,
-	// we try again using ',' as the delimiter. This allows the header to be
-	// defined using comma separation regardless of the file delimiter.
+	// Check if a custom header was provided and attempt to parse the
+	// header using either the CSV delimiter or comma delimiter.
 	if *header != "" {
-		csvHeader = strings.Split(*header, string(csvDelimiter))
-		if len(csvHeader) == 1 {
-			csvHeader = strings.Split(*header, ",")
-		}
+		csvHeader = trySplit(*header, string(csvDelimiter), ",")
 		log.Printf("using a custom header: %+v", csvHeader)
+	}
+
+	// Check if a indicies were provided and attempt to parse the
+	// indicies using either the CSV delimiter or comma delimiter.
+	if *indicies != "" {
+		csvIndicies = trySplit(*indicies, string(csvDelimiter), ",")
+		log.Printf("using a provided indices: %+v", csvIndicies)
 	}
 
 }
@@ -156,6 +172,16 @@ func processCSV() {
 	_, err = db.Exec(query)
 	if err != nil {
 		log.Fatalf("could not create SQLite table: %s\n", err)
+	}
+
+	// Create indicies
+	for _, index := range csvIndicies {
+		query := "create index " + index + "_idx on csv (" + index + ")"
+		log.Printf("creating index: %s\n", query)
+		_, err = db.Exec(query)
+		if err != nil {
+			log.Fatalf("could not create index on %s: %s\n", index, err)
+		}
 	}
 
 	// Read the CSV data

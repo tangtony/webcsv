@@ -13,7 +13,7 @@ Download the latest binary from the [Releases](https://github.com/tangtony/webcs
 Usage: webcsv [options]
 ```
 
-Run `webcsv` with the following options to provide information about your CSV. Options can be provided environment variables or command-line. If both are provided, the command-line value takes precedence.
+Run `webcsv` with the following options to provide information about your CSV. Options can be provided via environment variables or command-line. If both are provided, the command-line value takes precedence.
 
 ### Options
 ```
@@ -22,6 +22,7 @@ Run `webcsv` with the following options to provide information about your CSV. O
   --file            The path to the CSV file [$CSV_FILE]
   --has-header      Whether the csv file has a header (default: true) [$CSV_HAS_HEADER]
   --header          A custom header to use for the data [$CSV_HEADER]
+  --indicies        Headers to create indicies for [$CSV_INDICIES]
 ```
 
 NOTE: When using an escaped delimiter such as a tab, it must be specified as follows:
