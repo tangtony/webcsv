@@ -268,12 +268,20 @@ func handleRequest(c *gin.Context) {
 		// attempt to convert the value into a float64 (number) when possible.
 		m := make(map[string]interface{})
 		for i, column := range columns {
+
+			// Skip columns with no values
+			if values[i] == "" {
+				continue
+			}
+
+			// Attempt to convert the string into a number
 			value := strings.Replace(values[i], ",", "", -1)
 			if number, err := strconv.ParseFloat(value, 64); err == nil && !math.IsInf(number, 0) {
 				m[column] = number
 			} else {
 				m[column] = values[i]
 			}
+
 		}
 
 		// Add the converted row into the array of results
