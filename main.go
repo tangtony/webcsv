@@ -267,8 +267,9 @@ func handleRequest(c *gin.Context) {
 		// attempt to convert the value into a float64 (number) when possible.
 		m := make(map[string]interface{})
 		for i, column := range columns {
-			if value, err := strconv.ParseFloat(values[i], 64); err == nil {
-				m[column] = value
+			value := strings.Replace(values[i], ",", "", -1)
+			if number, err := strconv.ParseFloat(value, 64); err == nil {
+				m[column] = number
 			} else {
 				m[column] = values[i]
 			}
