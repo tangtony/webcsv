@@ -32,6 +32,7 @@ var (
 	csvHasHeader  bool
 	csvHeader     []string
 	csvIndicies   []string
+	parseNumbers  bool
 )
 
 // trySplit attempts to split the given string by calling
@@ -59,6 +60,7 @@ func parseEnvironment() {
 	flagSet.BoolVar(&csvHasHeader, "has-header", true, "whether or not the csv file has a header")
 	header := flagSet.String("header", "", "a custom header to use")
 	indicies := flagSet.String("indicies", "", "headers to create indicies for")
+	flagSet.BoolVar(&parseNumbers, "parse-numbers", true, "whether or not to parse JSON strings into numbers")
 
 	// Parse the CLI flags/environment variables
 	flagSet.Parse(os.Args[1:])
@@ -101,6 +103,13 @@ func parseEnvironment() {
 	if *indicies != "" {
 		csvIndicies = trySplit(*indicies, string(csvDelimiter), ",")
 		log.Printf("using a provided indices: %+v", csvIndicies)
+	}
+
+	// Check if we should parse JSON strings into numbers
+	if parseNumbers {
+		log.Println("JSON string-to-number parsing is enabled")
+	} else {
+		log.Println("JSON string-to-number parsing is disabled")
 	}
 
 }
@@ -274,13 +283,19 @@ func handleRequest(c *gin.Context) {
 				continue
 			}
 
-			// Attempt to convert the string into a number
-			value := strings.Replace(values[i], ",", "", -1)
-			if number, err := strconv.ParseFloat(value, 64); err == nil && !math.IsInf(number, 0) {
-				m[column] = number
-			} else {
-				m[column] = values[i]
+			// Attempt to convert the value into a number and add
+			// the column/number pair to the map
+			if parseNumbers {
+				value := strings.Replace(values[i], ",", "", -1)
+				number, err := strconv.ParseFloat(value, 64)
+				if err == nil && !math.IsInf(number, 0) {
+					m[column] = number
+					continue
+				}
 			}
+
+			// Add the column/value pair to the map as-is
+			m[column] = values[i]
 
 		}
 

@@ -23,6 +23,7 @@ Run `webcsv` with the following options to provide information about your CSV. O
   --has-header      Whether the csv file has a header (default: true) [$CSV_HAS_HEADER]
   --header          A custom header to use for the data [$CSV_HEADER]
   --indicies        Headers to create indicies for [$CSV_INDICIES]
+  --parse-numbers   Whether or not to parse JSON strings into numbers [$CSV_PARSE_NUMBERS]
 ```
 
 NOTE: When using an escaped delimiter such as a tab, it must be specified as follows:
