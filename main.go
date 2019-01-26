@@ -53,17 +53,16 @@ func parseEnvironment() {
 	log.Println("*** Parsing configuration from environment ***")
 
 	// Define configuration variables
-	flagSet := flag.NewFlagSetWithEnvPrefix(os.Args[0], "CSV", 0)
-	flagSet.StringVar(&csvFile, "file", "", "path to csv file")
-	delimiter := flagSet.String("delimiter", ",", "data separator in the csv file")
-	flagSet.IntVar(&csvFieldCount, "field-count", 0, "the number of fields/columns in the csv file")
-	flagSet.BoolVar(&csvHasHeader, "has-header", true, "whether or not the csv file has a header")
-	header := flagSet.String("header", "", "a custom header to use")
-	indicies := flagSet.String("indicies", "", "headers to create indicies for")
-	flagSet.BoolVar(&parseNumbers, "parse-numbers", true, "whether or not to parse JSON strings into numbers")
+	flag.StringVar(&csvFile, "file", "", "path to csv file")
+	delimiter := flag.String("delimiter", ",", "data separator in the csv file")
+	flag.IntVar(&csvFieldCount, "field-count", 0, "the number of fields/columns in the csv file")
+	flag.BoolVar(&csvHasHeader, "has-header", true, "whether or not the csv file has a header")
+	header := flag.String("header", "", "a custom header to use")
+	indicies := flag.String("indicies", "", "headers to create indicies for")
+	flag.BoolVar(&parseNumbers, "parse-numbers", true, "whether or not to parse JSON strings into numbers")
 
 	// Parse the CLI flags/environment variables
-	flagSet.Parse(os.Args[1:])
+	flag.Parse()
 
 	// Check that a CSV file was provided
 	if csvFile == "" {

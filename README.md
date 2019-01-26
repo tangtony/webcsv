@@ -17,13 +17,13 @@ Run `webcsv` with the following options to provide information about your CSV. O
 
 ### Options
 ```
-  --delimiter       The data separator used in the CSV file (default: ',') [$CSV_DELIMITER]
-  --field-count     The number of fields/columns in the CSV file [$CSV_FIELD_COUNT]
-  --file            The path to the CSV file [$CSV_FILE]
-  --has-header      Whether the csv file has a header (default: true) [$CSV_HAS_HEADER]
-  --header          A custom header to use for the data [$CSV_HEADER]
-  --indicies        Headers to create indicies for [$CSV_INDICIES]
-  --parse-numbers   Whether or not to parse JSON strings into numbers [$CSV_PARSE_NUMBERS]
+  --delimiter       The data separator used in the CSV file (default: ',') [$DELIMITER]
+  --field-count     The number of fields/columns in the CSV file [$FIELD_COUNT]
+  --file            The path to the CSV file [$FILE]
+  --has-header      Whether the csv file has a header (default: true) [$HAS_HEADER]
+  --header          A custom header to use for the data [$HEADER]
+  --indicies        Headers to create indicies for [$INDICIES]
+  --parse-numbers   Whether or not to parse JSON strings into numbers [$PARSE_NUMBERS]
 ```
 
 NOTE: When using an escaped delimiter such as a tab, it must be specified as follows:
